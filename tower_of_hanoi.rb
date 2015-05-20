@@ -3,7 +3,7 @@ class TowerOfHanoi
     def initialize(number_of_discs = 3)
       @number_of_discs = number_of_discs
       @rods = [Array.new, Array.new, Array.new]
-      @turn_count = 0
+      @move_count = 0
 
       puts "Welcome to Tower of Hanoi!  Type 'play' to start!"
 
@@ -23,7 +23,7 @@ class TowerOfHanoi
      #prompt for next move
     def prompt_move
       render
-      puts "Move ##{@turn_count+1}: enter where you'd like to move from and to in the format [1,3]. Enter 'q' to quit."
+      puts "Move ##{@move_count+1}: enter where you'd like to move from and to in the format: 1,3. Enter 'q' to quit."
       @user_input = gets.chomp
       puts "You entered: #{@user_input}."
       test_input
@@ -32,26 +32,42 @@ class TowerOfHanoi
 
     #show board
     def render
-      puts @rods
+      #puts @rods
+
+      #flip into rows
+
+      (@number_of_discs-1).downto(0) do |row|
+        #print row
+        @rods.each do |column|
+          if column.empty? || column[row].nil?
+            print " "
+          else
+            print column[row]
+          end
+        end
+        print "\n"
+      end
+      print "123\n"
+
     end
 
 
     def test_input
       if @user_input == "q"
-        puts "You quit after #{@turn_count} turns.  Thanks for playing!"
+        puts "You quit after #{@move_count} moves.  Thanks for playing!"
         exit
       end
 
-      @user_from = @user_input[1].to_i
-      @user_to = @user_input[3].to_i
+      @user_from = @user_input[0].to_i
+      @user_to = @user_input[2].to_i
 
       #if valid, send move
       # fail conditions: from/to rod not between 1 and 3; from value not bigger than min value of to array
-      if @user_from.between?(1,3) && @user_to.between?(1,3) && ( @rods[@user_to-1].empty? || @rods[@user_from-1].min < @rods[@user_to-1].min )
+      if @user_from.between?(1,3) && @user_to.between?(1,3) && not(@rods[@user_from-1].empty?) && ( @rods[@user_to-1].empty? || @rods[@user_from-1].min < @rods[@user_to-1].min )
         @user_move = [@user_from,@user_to]
         make_move
       else
-        puts "Move appears invalid.  Please try again."
+        puts "\033[31mMove appears invalid.  Please try again.\033[0m" #\033[*m changes the color to/from red!
         prompt_move
       end
     end
@@ -59,8 +75,8 @@ class TowerOfHanoi
 
     #when move received
     def make_move
-      #add 1 to turn count
-      @turn_count += 1
+      #add 1 to move count
+      @move_count += 1
       #move top disc accordingly
       @rods[@user_move[1]-1] << @rods[@user_move[0]-1].pop
       win_test
@@ -76,7 +92,7 @@ class TowerOfHanoi
 
     def win
       render
-      puts "Congratulations!  You won in #{@turn_count} turns!"
+      puts "Congratulations!  You won in #{@move_count} moves!"
       exit
     end
 
