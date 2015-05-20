@@ -32,29 +32,34 @@ class TowerOfHanoi
 
     #show board
     def render
-      #puts @rods
+      print "\n"
 
-      #flip into rows
+      #calculate column width
+      width = @number_of_discs * 2 + 1
 
       (@number_of_discs-1).downto(0) do |row|
         #print row
         @rods.each do |column|
+          output = String.new
           if column.empty? || column[row].nil?
-            print " "
+            output = " "
           else
-            print column[row]
+            output = "[]"*column[row]
           end
+          print output.center(width, " ")
         end
         print "\n"
       end
-      print "123\n"
+
+      #x-axis labels
+      print "#1".center(width, " ")+"#2".center(width, " ")+"#3".center(width, " ")+"\n"*2
 
     end
 
 
     def test_input
       if @user_input == "q"
-        puts "You quit after #{@move_count} moves.  Thanks for playing!"
+        puts "\033[31mYou quit after #{@move_count} moves.  Thanks for playing!\033[0m" #\033[*m changes the color to/from red!
         exit
       end
 
@@ -67,7 +72,7 @@ class TowerOfHanoi
         @user_move = [@user_from,@user_to]
         make_move
       else
-        puts "\033[31mMove appears invalid.  Please try again.\033[0m" #\033[*m changes the color to/from red!
+        puts "\033[31mMove appears invalid.  Please try again.\033[0m"
         prompt_move
       end
     end
@@ -92,7 +97,7 @@ class TowerOfHanoi
 
     def win
       render
-      puts "Congratulations!  You won in #{@move_count} moves!"
+      puts "\033[32mCongratulations!  You won in #{@move_count} moves!\033[0m"
       exit
     end
 
